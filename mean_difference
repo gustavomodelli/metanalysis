@@ -1,0 +1,9 @@
+str(amlodipine)
+
+
+prop <- metacont(n.amlo, mean.amlo, sqrt(var.amlo), n.plac, mean.plac, sqrt(var.plac),
+                 data = amlodipine, sm = 'SMD' )
+prop
+
+forest.meta(prop, layout="RevMan5", comb.r=T, comb.f=F)
+
