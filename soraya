@@ -1,0 +1,48 @@
+library(tidyverse)
+library(meta)
+
+
+
+# using meta for proportional metanalysis
+event_severe <- read.csv('event_severe.csv', sep = ';')
+event_fatal <- read.csv('event_fatal.csv', sep = ';') 
+event_hypo <- read.csv('event_hypocalcemia.csv', sep = ';') 
+event_hypo_simp <- read.csv('event_hypo_sinto.csv', sep = ';')
+total_event <- read.csv('total_event.csv', sep = ';')
+str(event_severe)
+
+## Evento Advserso Grave
+prop <- metaprop(event = event, n = total, studlab = study, data = event_severe, sm="PFT", method="Inverse")
+
+
+forest.meta(prop, layout="RevMan5", xlab="Proportion", comb.r=T, comb.f=F, xlim = c(0,1), fontsize=10, digits=3)
+funnel.meta(prop)
+
+## Evetnto Adverso Fatal
+prop2 <- metaprop(event = event, n = total, studlab = study, data = event_fatal, sm="PFT", method="Inverse")
+
+
+forest.meta(prop2, layout="RevMan5", xlab="Proportion", comb.r=T, comb.f=F, xlim = c(0,1), fontsize=10, digits=3)
+funnel.meta(prop2)
+
+
+## Evento Hipocalcemia
+prop3 <- metaprop(event = event, n = total, studlab = study, data = event_hypo, sm="PFT", method="Inverse")
+
+
+forest.meta(prop3, layout="RevMan5", xlab="Proportion", comb.r=T, comb.f=F, xlim = c(0,1), fontsize=10, digits=3)
+funnel.meta(prop3)
+
+## Evento Hipocalcemia sintomatica
+prop4 <- metaprop(event = event, n = total, studlab = study, data = event_hypo_simp, sm="PFT", method="Inverse")
+
+
+forest.meta(prop4, layout="RevMan5", xlab="Proportion", comb.r=T, comb.f=F, xlim = c(0,1), fontsize=10, digits=3)
+funnel.meta(prop4)
+
+## Eventos totais
+prop5 <- metaprop(event = event, n = total, studlab = study, data = total_event, sm="PFT", method="Inverse")
+
+
+forest.meta(prop5, layout="RevMan5", xlab="Proportion", comb.r=T, comb.f=F, xlim = c(0,1), fontsize=10, digits=3)
+funnel.meta(prop5)
