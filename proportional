@@ -1,0 +1,34 @@
+library(tidyverse)
+library(metafor)
+library(rmeta)
+library(meta)
+
+
+data("dat.bcg")
+desf01 <- read.csv('desf01.csv', sep = ';', dec = ',')
+str(desf01)
+
+
+## using metafor
+res <- rma(ai = ev.trt, n1i = n.trt, ci = ev.ctrl, n2i = n.ctrl, data = desf01, measure = "RD", method = 'REML')
+summary(res)
+plot(res)
+
+
+x_title <- str_c("Random-Effects Model -  ", 'Total Heterogeneity I2: ', res$I2, " %  ", "p-value: ", round(res$pval, 2))
+
+
+forest(res, slab = desf01$name,  cex=1.2, 
+       header = TRUE, xlab = x_title,)
+
+
+
+# using meta for proportional metanalysis
+morbi <- read.csv('morbi_embo.csv', sep = ';')
+str(morbi)
+
+prop <- metaprop(event = casos, n = total, studlab = autor, data = morbi, sm="PFT", method="Inverse")
+
+forest(prop)
+forest.meta(prop, layout="RevMan5")
+funnel(prop)
