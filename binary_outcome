@@ -1,0 +1,27 @@
+library(tidyverse)
+library(meta)
+
+
+data("Fleiss1993bin")
+Fleiss1993bin %>% str()
+
+
+## Using only randon effects
+prop1 <- metabin(event.e = d.asp, n.e = n.asp, event.c = d.plac, n.c = n.plac,
+                 data = Fleiss1993bin, 
+                 sm = 'RR', comb.fixed = FALSE, method.tau = 'DL'
+                 )
+
+summary(prop1)
+
+## Forest Plot
+forest.meta(prop1, studlab = str_c(Fleiss1993bin$study, " , " , Fleiss1993bin$year), layout = 'RevMan5')
+
+
+## Metaregression by year
+
+meta1 <- metareg(prop1, ~ year)
+
+## Plot
+bubble(meta1)
+
