@@ -1,0 +1,21 @@
+library(meta)
+
+
+## subgroup metanalysis by allocation
+library(dmetar)
+
+prop5 <- subgroup.analysis.mixed.effects(x = mh2,
+                                subgroups = dat.colditz1994$alloc)
+
+forest(prop5)
+
+
+## Metaregression
+
+meta1 <- metareg(mh2, ~ ablat)
+
+bubble(meta1,
+       xlab = "Latittude",
+       col.line = "blue",
+       studlab = TRUE)
+
