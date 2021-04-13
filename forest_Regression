@@ -1,0 +1,24 @@
+library(meta)
+
+model <- glm(hospital_admission ~ convalescent_plasma, weights = weights,
+    data = m.data, family = 'binomial')
+
+
+model2 <- glm(mechanical_ventilation~ convalescent_plasma, weights = weights,
+    data = m.data, family = 'binomial') 
+
+
+model3 <- glm(death ~ convalescent_plasma, weights = weights,
+              data = m.data, family = 'binomial')
+
+##Create a Table with forest
+
+results <- data.frame(
+  outcome = c('Hospital Admission', 'Mechanical Ventilation',  'Death'),
+  TE = c(-1.224e-15,   -0.08594, 0.1030),
+  SE = c(3.802e-01, 0.41469, 0.1030)
+)
+
+res1 <- metagen(TE, SE, studlab = outcome, data = results)
+forest.meta(res1, layout = 'RevMan5', comb.fixed = FALSE, comb.random = FALSE, hetlab = '',
+            overall.hetstat = FALSE)
