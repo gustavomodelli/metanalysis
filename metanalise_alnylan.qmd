@@ -1,0 +1,161 @@
+---
+title: "Metanalise"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Metanalise Convencional
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(tidyverse)
+library(readxl)
+library(meta)
+library(metafor)
+library(esc)
+library(netmeta)
+library(dmetar)
+
+nis <- read_xlsx('data.xlsx', sheet = 1)
+norfolk <- read_xlsx('data.xlsx', sheet = 2)
+net_nis <- read_xlsx('data.xlsx', sheet = 3)
+net_norfolk <- read_xlsx('data.xlsx', sheet = 4)
+```
+
+# SMD (standard mean difference)
+
+# NIS-7
+
+```{r}
+#| echo: false
+
+prop <- metacont(
+  n.e = n.t,
+  mean.e = mean.t,
+  sd.e = sd.t,
+  mean.c = n.e,
+  n.c = n.e,
+  sd.c = sd.e,
+  data = nis,
+  sm = 'SMD',
+  studlab = study
+)
+
+forest.meta(prop, layout="jama", comb.r=T, comb.f=F)
+```
+
+# Norfolk
+
+```{r}
+#| echo: false
+
+
+prop <- metacont(
+  n.e = n.t,
+  mean.e = mean.t,
+  sd.e = sd.t,
+  mean.c = n.e,
+  n.c = n.e,
+  sd.c = sd.e,
+  data = norfolk,
+  sm = 'SMD',
+  studlab = study
+)
+
+forest.meta(prop, layout="jama", comb.r=T, comb.f=F)
+```
+
+# Escalc
+
+```{r}
+#| echo: false
+
+esc_mean_sd(grp1m = nis$mean.t, grp1n = nis$n.t, grp1sd = nis$sd.t,
+            grp2m = nis$mean.e, grp2n = nis$n.e, grp2sd = nis$sd.e,
+            study = nis$study)
+
+
+esc_mean_sd(grp1m = norfolk$mean.t, grp1n = norfolk$n.t, grp1sd = norfolk$sd.t,
+            grp2m = norfolk$mean.e, grp2n = norfolk$n.e, grp2sd = norfolk$sd.e,
+            study = norfolk$study)
+```
+
+## Network meta
+
+# Network - NIS-7
+
+```{r}
+#| echo: false
+
+m.netmeta <- netmeta(TE = TE,
+                     seTE = seTE,
+                     treat1 = treat1,
+                     treat2 = treat2,
+                     studlab = study,
+                     data = net_nis,
+                     sm = "SMD",
+                     fixed = TRUE,
+                     random = FALSE,
+                     reference.group = "placebo",
+                     details.chkmultiarm = TRUE,
+                     sep.trts = " vs ")
+
+summary(m.netmeta)
+```
+
+# Direct/Indirect Evidence
+
+```{r}
+#| echo: false
+
+direct.evidence.plot(m.netmeta)
+```
+
+# Rank
+
+```{r}
+#| echo: false
+
+netrank(m.netmeta, small.values = 'good')
+```
+
+# Network - Norfolk
+
+```{r}
+#| echo: false
+
+m.netmeta2 <- netmeta(TE = TE,
+                     seTE = seTE,
+                     treat1 = treat1,
+                     treat2 = treat2,
+                     studlab = study,
+                     data = net_norfolk,
+                     sm = "SMD",
+                     fixed = TRUE,
+                     random = FALSE,
+                     reference.group = "placebo",
+                     details.chkmultiarm = TRUE,
+                     sep.trts = " vs ")
+
+summary(m.netmeta2)
+```
+
+# Direct/Indirect Evidence
+
+```{r}
+#| echo: false
+
+direct.evidence.plot(m.netmeta2)
+```
+
+# Rank
+
+```{r}
+#| echo: false
+
+netrank(m.netmeta2, small.values = 'good')
+```
